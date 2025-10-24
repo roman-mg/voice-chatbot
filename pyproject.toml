@@ -1,0 +1,140 @@
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "voice-chatbot"
+version = "0.1.0"
+description = "A chatbot built with LiveKit, leveraging voice AI technologies."
+authors = ["RMN <no-reply@mail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{ include = "src" }]
+
+[tool.poe.tasks]
+black-check = "poetry run black --check --config pyproject.toml ./"
+isort-check = "poetry run isort --check-only --settings pyproject.toml ./"
+ruff-check = "poetry run ruff --config pyproject.toml check ./"
+mypy-check = "poetry run mypy --config-file pyproject.toml ./"
+black-format = "poetry run black --config pyproject.toml ./"
+isort-format = "poetry run isort --settings pyproject.toml ./"
+ruff-format = "poetry run ruff --config pyproject.toml format ./"
+check = ["black-check", "isort-check", "ruff-check"]
+hard-check = ["check", "mypy-check"]
+format = ["black-format", "isort-format", "ruff-format"]
+test = "poetry run pytest -c pyproject.toml --cov-report=html tests/"
+
+[tool.poetry.dependencies]
+python = ">=3.12,<3.13"
+python-dotenv = "^1.1.1"
+livekit = "^1.0.17"
+livekit-agents = "^1.2.15"
+livekit-plugins-noise-cancellation = "^0.2"
+
+[tool.poetry.group.dev.dependencies]
+poethepoet = "^0.33.1"
+pytest = "^8.3.5"
+pytest-asyncio = "^0.26.0"
+pytest-env = "^1.1.5"
+pytest-html = "^4.1.1"
+pytest-cov = "^4.1.0"
+black = "^25.1.0"
+isort = "^6.0.1"
+ruff = "^0.11.5"
+mypy = "^1.15.0"
+
+[tool.black]
+target-version = ["py312"]
+color = true
+line-length = 120
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+    | \.github
+    | \.idea
+    | \.mypy_cache
+    | \.ruff_cache
+    | \.venv
+    | build
+    | venv
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 120
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+known_first_party = ["src"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+lint.select = [
+    "A", # flake8-builtins
+    "B", # flake8-bugbear
+    "C", # flake8-comprehensions
+    "E", # pycodestyle errors
+    "F", # pyflakes
+    "I", # isort
+    "N", # pep8-naming
+    "Q", # flake8-quotes
+    "W", # pycodestyle warnings
+    "ANN", # flake8-annotations
+    "F401", # unused-import
+    "RET", # flake8-return
+    "SIM", # flake8-simplify
+    "TID", # flake8-tidy-imports
+    "T20", # flake8-print
+    "UP", # pyupgrade
+]
+lint.ignore = [
+    "E501", # line too long, handled by black
+    "ANN002", # Missing type annotation for *args
+    "ANN003", # Missing type annotation for **kwargs
+    "ANN204", # Missing type annotation for special methods
+    "ANN401", # Dynamically typed expressions (typing.Any) are disallowed in `*args/**kwargs`
+    "N812", # Lowercase imported as non-lowercase
+]
+exclude = [
+    ".git",
+    ".github",
+    ".idea",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".venv",
+    "build",
+    "venv",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.mypy]
+python_version = 3.12
+color_output = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+env = []
+norecursedirs = [
+    ".git",
+    ".github",
+    ".idea",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".venv",
+    "build",
+    "venv"
+]
+testpaths = ["tests"]
+addopts = [
+    "--strict-markers",
+    "--doctest-modules",
+    "--doctest-continue-on-failure"
+]
