@@ -28,7 +28,7 @@ test = "poetry run pytest -c pyproject.toml --cov-report=html tests/"
 python = ">=3.12,<3.13"
 python-dotenv = "^1.1.1"
 livekit = "^1.0.17"
-livekit-agents = "^1.2.15"
+livekit-agents = {version = "^1.2.15", extras = ["silero", "turn-detector"]}
 livekit-plugins-noise-cancellation = "^0.2"
 
 [tool.poetry.group.dev.dependencies]
